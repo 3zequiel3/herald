@@ -1,0 +1,5 @@
+# Tooling cache (skill registry)
+.atl/
+
+# Brainstorming / design docs (not part of the publishable skill)
+docs/
