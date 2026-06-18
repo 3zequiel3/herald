@@ -30,8 +30,8 @@ For each system in scope, detect — without reading code — what factual mater
 | Signal | Tells you |
 |---|---|
 | `knowledge-base/` present | A KB exists (possibly chronicle's). Candidate **fresh / unverifiable** source. |
-| chronicle freshness ledger present (the `.json`/ledger chronicle writes) | Freshness is **auto-verifiable** → can detect `fresh` vs `stale`. |
-| `knowledge-base/` present but **no ledger** | Freshness **unverifiable** → must ask the user or spot-check. |
+| `.ledger/fingerprints.json` present | Freshness is **auto-verifiable** → a cheap staleness check decides `fresh` vs `stale`, and grounding recall is available. |
+| `.ledger/` absent (KB or docs present, no fingerprints) | Freshness **unverifiable** → must ask the user or spot-check. |
 | `docs/` with sources, loose `.md`, images, pasted prompts | Additional evidence to cite (`[doc]`, `[img]`). |
 | Code present, no KB, no docs | Grounding must come from a **delegated code read**. |
 

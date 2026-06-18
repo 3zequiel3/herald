@@ -95,12 +95,12 @@ herald is **agnostic to who produced the factual material** — chronicle, a hum
 
 | State | Trigger | Behavior |
 |---|---|---|
-| **fresh** | chronicle KB present + ledger says code unchanged | Use it. Cheapest, most trusted. Cite `[kb · node]`. |
-| **stale** | ledger/git fast-path says code changed, OR user declares stale | **Code is the source of truth.** Re-ground the relevant slice from code (delegated). Discard stale claims. |
-| **unverifiable** | KB/docs exist but no freshness ledger (incl. non-chronicle KBs) | Do NOT assume fresh. Ask the user; offer a bounded code spot-check. Mark `⚠ unverified`. |
+| **fresh** | `.ledger/fingerprints.json` present + staleness check passes | Reuse the cached grounding. Cheapest, most trusted. Cite `[kb · node]`. |
+| **stale** | fingerprint/git fast-path says code changed, OR user declares stale | **Code is the source of truth.** Re-ground the relevant slice from code (delegated). Discard stale claims. |
+| **unverifiable** | KB/docs exist but no `.ledger/fingerprints.json` (incl. non-chronicle KBs) | Do NOT assume fresh. Ask the user; offer a bounded code spot-check. Mark `⚠ unverified`. |
 | **user-trusted** | user vouches for a source herald cannot auto-verify | Use as factual, but mark `⚠ user-trusted` for traceability. |
 
-When grounding falls back to real code, **delegate the read** (`sdd-explore` / `opsx-explore`, else a bounded read-only sub-agent) — token economy + reuse. If no chronicle KB exists, say so: *"this would work better if you documented first with chronicle"* — then proceed via the delegation path.
+herald reads freshness from the shared **`.ledger/fingerprints.json`** (a per-system file written by chronicle's tooling) and caches its own grounding alongside it for **recall** — so repeat runs reuse what hasn't changed instead of re-reading. When grounding falls back to real code, **delegate the read** (`sdd-explore` / `opsx-explore`, else a bounded read-only sub-agent) — token economy + reuse. If no `.ledger/` exists, say so: *"this would work better if you documented first with chronicle"* — then proceed via the delegation path. Full contract: [`assets/grounding.md`](assets/grounding.md).
 
 ---
 
@@ -151,6 +151,7 @@ Full contract in [`assets/provenance.md`](assets/provenance.md). In brief:
 |---|---|---|
 | Step 0 (always) | `detection-funnel.md` | everything else |
 | Grounding (any mode) | `grounding.md`, `provenance.md` | interview batteries |
+| Reading / seeding `.ledger/` | `ledger-contract.md` (schema, ownership, seeding, migration) | interview batteries |
 | Mode Ideate | `ideate-interview.md`, `consolidation.md` | bridge-interview |
 | Mode Bridge | `ideate-interview.md` + `bridge-interview.md`, `consolidation.md` | — |
 | Approval gate + handoff | `consolidation.md`, `seed-contract.md` | interview batteries |
@@ -166,6 +167,7 @@ Full contract in [`assets/provenance.md`](assets/provenance.md). In brief:
 
 - **Detection funnel**: [assets/detection-funnel.md](assets/detection-funnel.md) — Layer 0/1/2, system counting, mode proposal.
 - **Grounding**: [assets/grounding.md](assets/grounding.md) — four freshness states, code-as-truth, delegated reading, non-chronicle KBs.
+- **Ledger contract**: [assets/ledger-contract.md](assets/ledger-contract.md) — the shared `.ledger/` kernel: layout, `fingerprints.json` schema, ownership, herald-seeds-it-when-chronicle-absent, migration, and the chronicle handoff brief.
 - **Ideate interview**: [assets/ideate-interview.md](assets/ideate-interview.md) — single-system question battery.
 - **Bridge interview**: [assets/bridge-interview.md](assets/bridge-interview.md) — cross-system integration battery (source of truth, sync, failure, idempotency).
 - **Consolidation**: [assets/consolidation.md](assets/consolidation.md) — proposal structure + approval-gate presentation.
