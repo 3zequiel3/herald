@@ -2,131 +2,140 @@
 
 # 📯 herald
 
-**Your pre-spec ideation consultant.**
-Turns scattered ideas, docs, and real code into a vetted implementation proposal — then hands it off to your spec flow.
+**Tu consultor de ideación pre-spec.**
+Convierte ideas sueltas, documentación y código real en una propuesta de implementación validada — y la entrega lista a tu flujo de specs.
 
-`reads code, never writes it` · `separates fact from proposal` · `single-system & cross-system` · `works standalone`
+`lee código, nunca lo modifica` · `separa el hecho de la propuesta` · `un sistema o varios` · `funciona sola`
 
 </div>
 
 ---
 
-## ⚡ Install
+## ⚡ Instalación
 
 ```bash
-# add it to the current project
+# agregarla al proyecto actual
 npx skills add 3zequiel3/herald
 
-# or globally, for every project
+# o de forma global, para todos tus proyectos
 npx skills add 3zequiel3/herald -g
 ```
 
-Works with Claude Code, Cursor, Codex, Copilot, Gemini, and any agent that reads the [Agent Skills](https://skills.sh) spec.
+Compatible con Claude Code, Cursor, Codex, Copilot, Gemini y cualquier agente que siga la spec de [Agent Skills](https://skills.sh).
 
 ---
 
-## 🤔 What is herald?
+## 🤔 ¿Qué es herald?
 
-herald is the **ideation step that comes *before* you write specs**. You give it raw material — existing docs, images, prompts, `.md` files, and source code (read-only) — and it gives you back a **consolidated idea + implementation proposal**: feasibility, gap analysis, integration design, risks and assumptions.
+herald es el **paso de ideación que va *antes* de escribir specs**. Le das material crudo — documentación existente, imágenes, prompts, archivos `.md` y código fuente (en modo solo lectura) — y te devuelve una **idea consolidada + propuesta de implementación**: análisis de factibilidad, gap analysis, diseño de integración, riesgos y supuestos.
 
-It's the sibling — and the inverse — of [`chronicle`](https://github.com/3zequiel3/chronicle):
+Es la hermana — y el opuesto — de `chronicle`:
 
 | | **chronicle** | **herald** |
 |---|---|---|
-| Role | 📚 Notary | 💡 Consultant |
-| Job | Documents what **exists** | Proposes what **doesn't exist yet** |
-| Invents | Nothing | Proposals — but **clearly marked as proposals** |
+| Rol | 📚 Notario | 💡 Consultor |
+| Trabajo | Documenta lo que **existe** | Propone lo que **todavía no existe** |
+| Inventa | Nada | Propuestas — pero **siempre marcadas como propuestas** |
 
-That last row is the whole point. herald is *allowed* to propose, so the one thing that keeps it honest is a **hard line between cited fact and marked proposal**. It never sells you a guess as a fact.
-
----
-
-## 🎯 What it actually does
-
-You point herald at one or more systems and ask a question like:
-
-> *"System A handles accreditations and users; System B has its own users module. When someone registers in A, it doesn't reflect in B. Can we implement cross-registration between them?"*
-
-herald reads both (read-only), interviews you on the gaps a machine can't answer, and produces:
-
-- ✅ **A factual baseline** — what each system does *today*, every claim cited to real code/docs.
-- 💡 **A proposal** — the integration design, marked speculative, with the assumptions spelled out.
-- ⚠️ **Risks & open questions** — the failure modes (what if B is down? are events idempotent?) surfaced, not hidden.
-- 🌱 **A seed** — a ready-to-run base prompt for your Spec-Driven Development flow.
-
-It does **not** write code. It produces the thinking that makes the code worth writing.
+Esa última fila es el punto central. herald *tiene permitido* proponer, así que lo único que lo mantiene honesto es una **línea dura entre el hecho citado y la propuesta marcada**. Nunca te vende una suposición como si fuera un hecho.
 
 ---
 
-## 🔧 How it works
+## 🎯 ¿Qué hace realmente?
+
+Apuntás herald a uno o más sistemas y le hacés una pregunta como:
+
+> *"El Sistema A maneja acreditaciones y usuarios; el Sistema B tiene su propio módulo de usuarios. Cuando alguien se registra en A, no se refleja en B. ¿Se puede implementar el registro cruzado entre los dos?"*
+
+herald lee ambos (solo lectura), te entrevista sobre lo que una máquina no puede saber, y produce:
+
+- ✅ **Una base factual** — qué hace cada sistema *hoy*, con cada afirmación citada al código/documentación real.
+- 💡 **Una propuesta** — el diseño de integración, marcado como especulativo, con los supuestos explícitos.
+- ⚠️ **Riesgos y preguntas abiertas** — los modos de falla (¿y si B está caído?, ¿los eventos son idempotentes?) puestos sobre la mesa, no escondidos.
+- 🌱 **Un seed** — un prompt base listo para correr en tu flujo de Spec-Driven Development.
+
+**No escribe código.** Produce el razonamiento que hace que valga la pena escribirlo.
+
+---
+
+## 🔧 ¿Cómo funciona?
 
 ```
-  detect systems ──▶ pick mode (Ideate / Bridge)
+  detecta sistemas ──▶ elige modo (Ideate / Bridge)
         │
-  ground in real code  (use a fresh KB if there is one, else read the
-        │               relevant slice — delegated, read-only, bounded)
-  interview you on the gaps  (the WHY, the boundary, the constraints)
+  groundea en código real  (usa una KB fresca si existe; si no, lee la
+        │                    rebanada relevante — delegado, solo lectura, acotado)
+  te entrevista sobre los huecos  (el PORQUÉ, el límite, las restricciones)
         │
-  consolidate  →  idea + feasibility + gaps + design + risks
+  consolida  →  idea + factibilidad + gaps + diseño + riesgos
         │
-   ★ APPROVAL GATE ★  you see the full proposal, fact vs proposal split clean
-        │             ├─ tweak it → re-consolidate
-        │             └─ approve  → continue
+   ★ APPROVAL GATE ★  ves la propuesta completa, hecho vs propuesta separados
+        │             ├─ ajustás → vuelve a consolidar
+        │             └─ aprobás → continúa
         ▼
-   hand off the seed  →  /sdd-new   (or just hand it to you, if no SDD flow)
+   entrega el seed  →  /sdd-new   (o te lo da a vos, si no hay flujo SDD)
 ```
 
-**The approval gate is non-negotiable.** herald never hands anything downstream until *you* have seen the proposal and approved it. No black boxes.
+**El approval gate no es negociable.** herald nunca entrega nada aguas abajo hasta que *vos* viste la propuesta y la aprobaste. Sin cajas negras.
 
 ---
 
-## 🧭 Two modes
+## 🧭 Dos modos
 
-### 🟢 Ideate — one system
-*"Propose a referral system for my marketplace."* herald grounds the relevant slice and asks the questions that matter: what problem, what it touches, does it scale, what's the smallest valuable version.
+### 🟢 Ideate — un sistema
+*"Proponé un sistema de referidos para mi marketplace."* herald groundea la rebanada relevante y hace las preguntas que importan: qué problema resuelve, qué toca, si escala, cuál es la versión mínima que aporta valor.
 
-### 🔵 Bridge — two or more systems
-*"Integrate A with B."* Everything Ideate does, **plus** the integration questions that quietly sink projects: **source of truth**, sync direction, real-time vs batch, behavior under partial failure, idempotency, eventual consistency, the contract between systems.
+### 🔵 Bridge — dos o más sistemas
+*"Integrá A con B."* Todo lo de Ideate, **más** las preguntas de integración que hunden proyectos en silencio: **fuente de verdad**, dirección del sync, tiempo real vs batch, comportamiento ante fallo parcial, idempotencia, consistencia eventual, el contrato entre sistemas.
 
-herald auto-detects how many systems are in scope and proposes the mode — you confirm.
+herald detecta solo cuántos sistemas hay en juego y propone el modo — vos lo confirmás.
 
 ---
 
-## 🛡️ The discipline: fact vs proposal
+<details>
+<summary><b>🛡️ La disciplina: hecho vs propuesta</b></summary>
 
-Every line herald writes is labeled, so you never have to guess what it's standing on:
+<br>
+
+Cada línea que herald escribe está etiquetada, así nunca tenés que adivinar sobre qué está parada:
 
 ```
-System A registers users via POST /api/register.   [code · src/auth/register.ts#register]
-System B stores users in a `users` table.          [kb · 04_modelo]
-The integration doc describes a nightly batch.      [doc · PLAN.md §Sync]  ⚠ unverified
-[proposal] On registration in A, emit a `user.created` event that B consumes.
-[assumption] B accepts externally-created user IDs without collision.
-[risk] If A is down during B's write, the cross-record is lost unless queued.
-[open-q] Real-time, or is eventual consistency acceptable?
+El Sistema A registra usuarios vía POST /api/register.   [code · src/auth/register.ts#register]
+El Sistema B guarda usuarios en una tabla `users`.       [kb · 04_modelo]
+La doc de integración describe un batch nocturno.         [doc · PLAN.md §Sync]  ⚠ unverified
+[proposal] Al registrarse en A, emitir un evento `user.created` que B consume.
+[assumption] B acepta IDs de usuario creados externamente sin colisión.
+[risk] Si A está caído durante la escritura de B, el registro cruzado se pierde salvo que se encole.
+[open-q] ¿Tiempo real, o es aceptable consistencia eventual?
 ```
 
-Facts are cited. Proposals are marked and written in proposal voice. Stale or unverified sources are flagged. That labeling rides along into the seed, so your spec flow inherits the caveats instead of rediscovering them.
+Los hechos se citan. Las propuestas se marcan y se escriben en voz de propuesta. Las fuentes desactualizadas o sin verificar se señalan. Ese etiquetado viaja dentro del seed, así tu flujo de specs hereda las salvedades en vez de redescubrirlas.
 
----
+</details>
 
-## 🧊 Freshness-aware grounding
+<details>
+<summary><b>🧊 Grounding con conciencia de frescura</b></summary>
 
-herald is **source-agnostic** — it'll use a [`chronicle`](https://github.com/3zequiel3/chronicle) knowledge base, a hand-written one, or just the code. What it cares about is *trust*:
+<br>
 
-- **Fresh KB?** → use it, cheapest path.
-- **Stale, or you say it's stale?** → **the code becomes the source of truth**; herald re-grounds the relevant slice from the real code (delegating to an explorer like `sdd-explore` when available).
-- **No freshness ledger?** → it won't assume; it asks you or spot-checks.
+herald es **agnóstico a la fuente** — usa una knowledge base de `chronicle`, una hecha a mano, o directamente el código. Lo que le importa es la *confianza*:
 
-Absence of staleness evidence is *not* evidence of freshness. A "fact" from an outdated doc is fiction with a citation — and herald treats it that way.
+- **¿KB fresca?** → la usa, el camino más barato.
+- **¿Stale, o vos decís que está desactualizada?** → **el código pasa a ser la fuente de verdad**; herald re-groundea la rebanada relevante desde el código real (delegando a un explorer como `sdd-explore` cuando está disponible).
+- **¿Sin ledger de frescura?** → no asume; te pregunta o hace un spot-check.
 
----
+La ausencia de evidencia de staleness **no** es evidencia de frescura. Un "hecho" sacado de una doc vieja es ficción con cita — y herald lo trata como tal.
 
-## 🔌 Standalone or orchestrated
+</details>
 
-**Standalone:** no SDD flow, no orchestrator? herald still runs the whole thing and hands you the seed inline.
+<details>
+<summary><b>🔌 Standalone u orquestada</b></summary>
 
-**Orchestrated:** drop this into your orchestrator's instruction file and herald slots into the chain `ideation → herald → seed → /sdd-new → sdd-explore → …`:
+<br>
+
+**Standalone:** ¿no hay flujo SDD ni orquestador? herald igual corre todo el proceso y te entrega el seed en el chat.
+
+**Orquestada:** pegá esto en el archivo de instrucciones de tu orquestador y herald se inserta en la cadena `ideación → herald → seed → /sdd-new → sdd-explore → …`:
 
 ```markdown
 ## herald — pre-spec ideation (front of funnel)
@@ -148,41 +157,49 @@ grounding_notes, next_action }:
 Chain: ideation → herald → seed → /sdd-new → sdd-explore → sdd-propose → …
 ```
 
----
+</details>
 
-## 🚫 What herald never does
+<details>
+<summary><b>🚫 Lo que herald nunca hace</b></summary>
 
-- ✋ Modify, refactor, or write source code — **read-only, always.**
-- ✋ Present a proposal, assumption, or risk as if it were a verified fact.
-- ✋ Hand anything off without your approval at the gate.
-- ✋ Spawn spec subagents itself — it returns a seed; the orchestrator runs the protocol.
+<br>
 
----
+- ✋ Modificar, refactorizar o escribir código fuente — **solo lectura, siempre.**
+- ✋ Presentar una propuesta, un supuesto o un riesgo como si fuera un hecho verificado.
+- ✋ Entregar algo sin tu aprobación en el gate.
+- ✋ Lanzar subagentes de spec por su cuenta — devuelve un seed; el orquestador corre el protocolo.
 
-## 🗂️ Structure
+</details>
+
+<details>
+<summary><b>🗂️ Estructura</b></summary>
+
+<br>
 
 ```
 herald/
-├── SKILL.md                          # lean router
+├── SKILL.md                          # router liviano
 └── assets/
-    ├── detection-funnel.md           # detect systems + pick the mode (cheap first)
-    ├── grounding.md                  # four freshness states, code-as-truth, delegated read
-    ├── ideate-interview.md           # single-system question battery
-    ├── bridge-interview.md           # cross-system integration battery
-    ├── consolidation.md              # proposal structure + approval gate
-    ├── seed-contract.md              # seed-prompt structure + return contract
-    ├── orchestrator-integration.md   # routing + handshake + pasteable block
-    ├── provenance.md                 # fact vs proposal taxonomy + freshness flags
-    ├── edge-cases.md                 # conflicts, missing inputs, final self-check
-    └── examples.md                   # one worked example per mode
+    ├── detection-funnel.md           # detecta sistemas + elige el modo (barato primero)
+    ├── grounding.md                  # cuatro estados de frescura, código-como-verdad, lectura delegada
+    ├── ideate-interview.md           # batería de preguntas single-system
+    ├── bridge-interview.md           # batería de integración cross-system
+    ├── consolidation.md              # estructura de la propuesta + approval gate
+    ├── seed-contract.md              # estructura del seed-prompt + contrato de retorno
+    ├── orchestrator-integration.md   # routing + handshake + bloque pegable
+    ├── provenance.md                 # taxonomía hecho vs propuesta + flags de frescura
+    ├── edge-cases.md                 # conflictos, inputs faltantes, self-check final
+    └── examples.md                   # un ejemplo trabajado por modo
 ```
+
+</details>
 
 ---
 
-## 📄 License
+## 📄 Licencia
 
 Apache-2.0.
 
 <div align="center">
-<sub>herald proposes. <a href="https://github.com/3zequiel3/chronicle">chronicle</a> documents. You decide.</sub>
+<sub>herald propone. chronicle documenta. Vos decidís.</sub>
 </div>
