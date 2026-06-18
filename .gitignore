@@ -1,8 +1,0 @@
-# Tooling cache (skill registry)
-.atl/
-
-# Brainstorming / design docs (not part of the publishable skill)
-docs/
-
-# Local skill-tuning workspace (evals, fixtures, scratch) — never published
-.dev/
