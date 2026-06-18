@@ -28,7 +28,7 @@ Rendered as **inline code** (visually distinct and greppable):
 | `img` | read from an image (diagram, screenshot, mockup) | `path/file.png` |
 | `user` | declared by the user | `user` (optional: round/date) |
 
-**`code` anchor:** the **symbol** is the source of truth (survives refactors); the line number (`~Lnn`) is a navigation hint, never canonical. A `code` citation is only valid if the symbol was actually read in the delegated grounding — never fabricated from memory.
+**`code` anchor:** the **symbol** is the source of truth (survives refactors); the line number (`~Lnn`) is a navigation hint, never canonical. A `code` citation is only valid if the symbol was actually read in the delegated grounding — never fabricated from memory. Because herald itself does not read the code, a delegated `code` citation must be **backed by the symbol's fingerprint** returned by the reader (cross-checked against `.ledger/` when present); a claim herald cannot back with a fingerprint is second-hand and downgrades to `⚠ unverified` (see [`grounding.md`](grounding.md) → Close the trust boundary).
 
 ### Freshness flags (appended to a factual citation)
 

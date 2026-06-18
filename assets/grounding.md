@@ -30,7 +30,7 @@ The contract herald relies on:
 Every grounding source resolves to exactly one state.
 
 ### `fresh`
-`.ledger/fingerprints.json` is present AND a cheap staleness check (git fast-path / fingerprint match) says the symbols in the relevant slice have not changed since they were fingerprinted.
+`.ledger/fingerprints.json` is present, **its `version` is one herald recognizes**, AND a cheap staleness check (git fast-path / fingerprint match) says the symbols in the relevant slice have not changed since they were fingerprinted. (Unrecognized `version` → not fresh; degrade to re-grounding — see [`ledger-contract.md`](ledger-contract.md) → Version compatibility.)
 
 → **Use the cached grounding directly.** Cheapest and most trusted path: reuse the facts from `herald-grounding.json`, or cite the chronicle KB as `[kb · node]`. No code read needed.
 
@@ -80,6 +80,12 @@ When grounding falls back to real code (`stale`, `unverifiable`-and-checking, or
 2. **Reuse an SDD explorer only when it fits** — if `sdd-explore` / `opsx-explore` is installed AND can take an ad-hoc, change-less scope, prefer it (it reuses ecosystem machinery). Do **not** assume it does: those are SDD *phase* agents with their own lifecycle, so lean on them only when they genuinely accept a one-off read; otherwise stay with option 1.
 
 Why this matters: **double win.** Token economy (isolated context, compact return — the main session does not inflate) and reuse (no reinvented explorer; herald leans on the same tooling the SDD flow already ships). The fallback is what keeps herald standalone when no explorer exists.
+
+**Close the trust boundary.** herald does not read the code itself, so a delegated `[code · …]` citation is first-hand only if the reader proves it read the real symbol. The delegated read must return, per cited symbol, its **normalized fingerprint** (computed with the hashing tool — see [`ledger-contract.md`](ledger-contract.md)). herald then cross-checks:
+
+- `.ledger/` present and the symbol is in it → the returned fingerprint must match. On match the citation is trusted `[code]`; on mismatch the slice is `stale` → re-ground.
+- No ledger → herald records the returned fingerprint (seeding) and the citation stands as read-this-run.
+- The reader cannot produce a fingerprint for a cited symbol → it is **not** a verified read: downgrade that claim to `⚠ unverified`, or drop it. A citation herald cannot back with a fingerprint is second-hand, and second-hand is not fact.
 
 Always scope the delegated read to the **slice relevant to the proposal** — the entities, routes, or modules the idea actually touches. Never "read the whole system to understand it".
 

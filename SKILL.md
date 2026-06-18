@@ -22,6 +22,8 @@ metadata:
 
 > **Standalone is mandatory.** herald works with OR without SDD/opsx skills or an orchestrator. The SDD handoff is the preferred path, never a requirement.
 
+> **The approval gate needs a human.** The mandatory gate requires a human approver (or one the user explicitly authorized). herald **never auto-approves**. Running headless with no approver → it returns the proposal and seed **without** handoff (`status: needs-approval`) and fires nothing. Absence of a human is not permission.
+
 > **Interaction language:** respond to the user in the language they write in (Spanish in → Spanish out). SKILL.md and every asset are authored in English.
 
 ---
@@ -122,7 +124,7 @@ Mode question battery (consolidate the idea)
        └─ NO  → present the consolidated proposal inline + suggest installing a spec flow
 ```
 
-**The approval gate is non-negotiable.** herald never hands a seed to the SDD flow without the user seeing and approving the proposal first. The gate is exactly where the factual/speculative split earns its keep: the user sees which claims are cited fact, which are proposal, and which rest on stale/unverified sources — before committing. Consolidation format and gate presentation: [`assets/consolidation.md`](assets/consolidation.md).
+**The approval gate is non-negotiable.** herald never hands a seed to the SDD flow without the user seeing and approving the proposal first. The gate is exactly where the factual/speculative split earns its keep: the user sees which claims are cited fact, which are proposal, and which rest on stale/unverified sources — before committing. **If no human approver is present (headless run), herald does not auto-approve — it returns `needs-approval` with the proposal and seed, and fires nothing.** Consolidation format and gate presentation: [`assets/consolidation.md`](assets/consolidation.md).
 
 ---
 

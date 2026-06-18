@@ -47,6 +47,15 @@ Cross-system (herald Bridge mode) → one `.ledger/` per system root; herald rea
 - **Fingerprint algorithm:** the normalized hash of a symbol's body (formatting and comments collapsed), so a reformat is **not** a change — only real logic is. This algorithm is the contract; it must stay identical across both skills — defined in the next section so herald is self-sufficient.
 - **`ref`:** the git commit at fingerprint time, used as the baseline for the git fast-path staleness check. `null` when git is unavailable.
 
+## Version compatibility (hard rule)
+
+`version` is the **first** thing a consumer reads, before interpreting any fingerprint. herald supports a known set of versions (currently `1`).
+
+- **Recognized version** → read and interpret the fingerprints normally.
+- **Missing, or newer than herald knows** (e.g. the writer bumped the algorithm to `2`) → herald does **NOT** interpret the fingerprints. It treats every symbol in scope as `unverifiable`, **re-grounds from code**, and surfaces a note: *"the ledger is vN; this herald understands v1 — re-grounding from code. Align versions (update herald, or re-run the writer) to restore fast freshness."*
+
+A Shared Kernel's worst failure is a **silent misread**: comparing fingerprints produced by a different algorithm would let stale code pass as fresh. An unrecognized version is therefore never assumed compatible — it degrades to the safe, expensive path, **loudly**.
+
 ## Fingerprint normalization (so herald can seed identically)
 
 herald must produce the same fingerprint chronicle would, or the ledger stops being interoperable. When herald seeds or refreshes an entry, normalize the symbol's body **before** hashing:

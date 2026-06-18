@@ -44,6 +44,7 @@ herald runs as a skill in the main loop and emits the structured signal defined 
 
 - **`seed-ready`** → fire `/sdd-new` with `seed` as the base prompt, then continue the normal SDD protocol: ask execution mode / artifact store / delivery strategy, resolve per-phase models, inject skill paths, and delegate to `sdd-explore` / `sdd-propose`. herald does **not** pre-empt these questions — that is the orchestrator's job.
 - **`inline-only`** → no flow detected (or one herald doesn't recognize); present herald's proposal and suggest installing a spec flow.
+- **`needs-approval`** → the gate could not be satisfied (no human approver, e.g. headless); surface the proposal + seed to a human and do **NOT** fire the flow. Never auto-approve on herald's behalf.
 - **`aborted`** → the user declined at the gate; do nothing downstream.
 
 ---

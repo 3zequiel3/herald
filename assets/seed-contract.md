@@ -11,7 +11,7 @@ herald does **not** spawn a flow's subagents itself. It returns a structured sig
 On gate success herald emits this structure (to the orchestrator, or inline to the user when standalone). It is a structured-output **convention**, not a typed API: herald writes these fields as text and the consumer — an orchestrator agent, or the user — reads them. The discipline is that herald always emits them in a parseable shape.
 
 ```
-status:          seed-ready | inline-only | aborted
+status:          seed-ready | inline-only | needs-approval | aborted
 mode:            ideate | bridge
 seed:            <the seed prompt — see structure below>
 seed_strength:   solid | partial | thin   (+ one line: why — see below)
@@ -21,6 +21,7 @@ next_action:     "fire <detected-flow-entry> with <seed>"   (only when seed-read
 
 - `seed-ready` — a spec-driven flow was detected; the consumer should fire **its** entry (the one named in `next_action` — `/sdd-new` for SDD, opsx's entry for opsx, or a generic orchestrator routing the seed). herald never hard-codes `/sdd-new`.
 - `inline-only` — no flow detected (or one herald doesn't recognize); herald has presented the proposal inline and recommends installing a flow. The seed is still emitted so the user can use it manually.
+- `needs-approval` — the proposal and seed are ready, but the mandatory gate could not be satisfied (no human approver, e.g. a headless run). herald handed off **nothing**; a human must review and approve before the flow runs. Never auto-approve to avoid this state.
 - `aborted` — the user declined at the gate; nothing downstream happens.
 
 ---
