@@ -82,15 +82,21 @@ Everything Layer 0 resolved (system count, stack, which sources exist) is **conf
 
 ## Complexity router — Express vs Full track
 
-After Layer 0 (and the mode proposal), pick the **track** from footprint signals alone — no extra question:
+After Layer 0 (and the mode proposal), pick the **track**. The deciding factor is the **size of the change the user is asking for**, NOT whether a ledger exists:
 
 | Signals | Track |
 |---|---|
-| 1 system + fresh `.ledger/` + a small/named slice, or the user says "quick / rápido / algo chico" | **Express** |
-| Bridge (2+ systems), or large/ambiguous scope, or grounding `stale` / `unverifiable` / no-KB | **Full** |
+| 1 system + the request targets a small, nameable slice (a field, an endpoint, one module), or the user says "quick / rápido / algo chico" | **Express** |
+| Bridge (2+ systems), or large/ambiguous scope ("rework", "redesign", touches many modules) | **Full** |
 
-- **Express = draft-first:** ground the fresh slice, **draft the proposal immediately** (inferred premises marked `[assumption]`), ask only the **blocking** gaps, then go to the gate. See [`ideate-interview.md`](ideate-interview.md) → Draft-first.
+> **Slice size is read from the REQUEST** — what the user is asking for — never inferred from the filesystem. Layer 0 cannot measure how big a change is; only the user's intent tells you.
+
+- **Express = draft-first:** ground the slice, **draft the proposal immediately** (inferred premises marked `[assumption]`), ask only the **blocking** gaps, then go to the gate. See [`ideate-interview.md`](ideate-interview.md) → Draft-first.
 - **Full:** run the complete battery (Ideate, or Ideate + Bridge) before consolidation.
+
+**The ledger only changes the COST of Express grounding, not whether Express applies:**
+- **fresh `.ledger/`** → draft from the cached grounding, zero code reads — cheapest.
+- **no ledger / stale** → draft from a **single** delegated bounded read of only the named slice — still cheap.
 
 Bridge is **always Full** — integration risk is not something to improvise. The approval gate and the fact/proposal split are mandatory in **both** tracks; Express changes the order and depth of questioning, never the discipline.
 

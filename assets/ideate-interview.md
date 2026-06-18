@@ -8,9 +8,9 @@ The goal of this battery is to fill, with the user, the gaps the code cannot ans
 
 ## Draft-first (Express track)
 
-When the complexity router (see [`detection-funnel.md`](detection-funnel.md)) selected the **Express track** — a small change in a single system, grounding already fresh — invert the order. Do **not** run the full battery up front:
+When the complexity router (see [`detection-funnel.md`](detection-funnel.md)) selected the **Express track** — a small, nameable change in a single system — invert the order. Do **not** run the full battery up front:
 
-1. From the fresh grounding, **draft the proposal immediately**, marking every inferred premise as `[assumption]`.
+1. Ground the slice — from the cached `.ledger/` grounding if it is fresh, otherwise from a **single** delegated bounded read of just the named slice — then **draft the proposal immediately**, marking every inferred premise as `[assumption]`.
 2. Ask **only the blocking gaps** — the questions whose answer would change the proposal's shape (usually just #1 problem/WHY and #6 MVP boundary). Skip anything grounding already settled.
 3. Take the draft to the approval gate, where the user corrects the assumptions in one pass.
 

@@ -43,10 +43,8 @@ herald hands off to whichever spec-driven flow Layer 0 detected — it does **no
 herald runs as a skill in the main loop and emits the structured signal defined in [`seed-contract.md`](seed-contract.md) (`status`, `mode`, `seed`, `seed_strength`, `grounding_notes`, `next_action`). The orchestrator acts on `status` and fires the **detected** flow's entry (SDD shown below as the common case):
 
 - **`seed-ready`** → fire `/sdd-new` with `seed` as the base prompt, then continue the normal SDD protocol: ask execution mode / artifact store / delivery strategy, resolve per-phase models, inject skill paths, and delegate to `sdd-explore` / `sdd-propose`. herald does **not** pre-empt these questions — that is the orchestrator's job.
-- **`inline-only`** → no SDD flow detected; present herald's proposal and suggest installing the SDD skills.
+- **`inline-only`** → no flow detected (or one herald doesn't recognize); present herald's proposal and suggest installing a spec flow.
 - **`aborted`** → the user declined at the gate; do nothing downstream.
-
-herald never spawns `sdd-*` subagents directly. Doing so would skip model assignment, skill resolution, and the execution-mode/artifact-store questions the orchestrator owns.
 
 ---
 

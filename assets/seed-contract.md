@@ -27,13 +27,13 @@ next_action:     "fire <detected-flow-entry> with <seed>"   (only when seed-read
 
 ## Seed strength
 
-`seed_strength` is herald's honest read of how ready the seed is, so the consumer (and the user) can judge before firing the flow:
+`seed_strength` is **read off the grounding coverage report** ([`grounding.md`](grounding.md) → Coverage report), not judged separately — so it stays mechanical, not a vibe:
 
-- **solid** — factual baseline is fresh and cited; few or no open questions; the proposal rests on verified ground.
-- **partial** — usable, but some claims are `⚠ unverified` / `⚠ user-trusted`, or a few `[open-q]` remain.
-- **thin** — the baseline rests largely on unverified sources or unread code, with several open questions; the flow should expect to do real exploration.
+- **solid** — every source in the coverage is `fresh` or `re-grounded from code`, no `⚠ unverified` / `⚠ user-trusted`, and ≤1 `[open-q]`.
+- **partial** — any `⚠ unverified` / `⚠ user-trusted` source, OR a few `[open-q]`, OR a slice that was skipped.
+- **thin** — the baseline rests largely on unverified sources or unread code, OR several `[open-q]`, OR a key slice was never grounded.
 
-Always add one line of *why* (e.g. `thin: baseline rests on an unverified KB; 3 open-qs unresolved`). It is a **signal, never a gate** — the user already approved; `seed_strength` only sets expectations downstream.
+Always add one line of *why*, lifted from the coverage (e.g. `thin: baseline rests on an unverified KB; 3 open-qs unresolved`). It is a **signal, never a gate** — the user already approved; `seed_strength` only sets expectations downstream.
 
 ---
 

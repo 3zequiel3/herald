@@ -24,7 +24,7 @@ Load only the section for the active mode. These show the *shape* of a good hera
 > - 💡 PROPOSAL: after a successful register, call `MailService` with a new `welcome` template.
 > - ⚠ RISK: email send failure shouldn't block registration — `[proposal]` fire-and-forget / queued. `[open-q]` retwill on failure?
 >
-> User approves → seed-ready → orchestrator fires `/sdd-new`.
+> User approves → `seed-ready` (`seed_strength: partial` — KB spot-checked against code, 1 open-q) → the consumer fires the detected flow's entry (`/sdd-new` for SDD).
 
 ---
 
@@ -50,8 +50,32 @@ Load only the section for the active mode. These show the *shape* of a good hera
 > - 💡 PROPOSAL: add a dedup/upsert key in B so redelivery is safe.
 > - ⚠ RISK: B down during A's write → `[proposal]` durable queue + retry. `[assumption]` B accepts external ids without collision. `[open-q]` bidirectional later?
 >
-> User: "approve, but make bidirectional an explicit open question" → re-present → approve → seed-ready → orchestrator fires `/sdd-new` with the seed (markers preserved).
+> User: "approve, but make bidirectional an explicit open question" → re-present → approve → `seed-ready` (`seed_strength: partial` — A's KB fresh, B re-grounded from code, 2 open-qs) → the consumer fires the detected flow's entry with the seed (markers preserved).
 
 ---
 
-Notice in both: every capability is cited before it's relied on, every new piece is `[proposal]`, every failure mode is `[risk]` or `[open-q]`, and freshness flags ride along. That is the discipline the examples exist to demonstrate.
+## Express — single system, small change, no ledger (draft-first)
+
+**User:** "Agregale un campo `archived` (boolean) a las notas de aura-ai para poder archivarlas."
+
+**herald (abridged):**
+
+> Layer 0: one system (`aura-ai`, Next.js + Prisma), no `.ledger/`. The request targets a small, nameable slice (`Note` model + its list query) → **Express track** (size comes from the request, not the filesystem).
+> Grounding (single delegated read of just the `Note` slice, since there's no ledger):
+> - `Note` is a Prisma model with no `archived` field today. `[code · prisma/schema.prisma#Note ~L40]`
+> - The notes list query returns all notes unfiltered. `[code · src/notes/list.ts#listNotes ~L12]`
+>
+> Draft-first: propose immediately, then ask only the **one blocking gap** — "should archived notes vanish from the default list, or show with a badge?" → user: "hidden by default."
+>
+> **Approval gate:**
+> - ✅ FACTUAL: `Note` has no `archived` field; `listNotes` returns all notes unfiltered.
+> - 💡 PROPOSAL: add `archived Boolean @default(false)`; filter `listNotes` to `archived: false`; add an `includeArchived` opt-in.
+> - ⚠ `[assumption]` no current query relies on archived rows showing. `[open-q]` backfill existing rows (defaults to false).
+>
+> User approves → `seed-ready` (`seed_strength: solid` — slice read fresh from code, 1 trivial open-q) → the consumer fires the detected flow's entry.
+
+> Express did **not** run the full battery: it drafted from one bounded read, asked a single blocking question, and went straight to the gate. The fact/proposal split and the mandatory gate stayed intact — only the order and depth changed.
+
+---
+
+Notice across all three: every capability is cited before it's relied on, every new piece is `[proposal]`, every failure mode is `[risk]` or `[open-q]`, and freshness flags ride along. That is the discipline the examples exist to demonstrate.
