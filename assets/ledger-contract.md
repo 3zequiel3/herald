@@ -74,6 +74,7 @@ This mirrors chronicle's algorithm (its `checker-spec.md §4`); this section is 
 2. **Tooling writes, the model never hand-edits.** Fingerprint values come from the hashing tool (`sha256sum`/`shasum` or equivalent), **never from the model's memory**. This is the same anti-fabrication rule chronicle enforces on its ledger, and it is what prevents drift. A fingerprint invented from memory is a defect.
 3. **Private files stay private.** A consumer reads only `fingerprints.json`. It must ignore the other skill's private files.
 4. **Gitignored.** `.ledger/` is tooling/infra state, not a deliverable — add it to the project's `.gitignore`. (For herald this is also consistent with its master rule: no proposal is persisted, only the cache that makes re-grounding cheap.)
+5. **Concurrent-safe writes.** Two agents or terminals may write `.ledger/` at once. The writer must (a) write **atomically** — temp file + `rename` — so a reader never sees half-written JSON, and (b) **read-merge-write** — load the current `fingerprints.json`, union your new `path#symbol` entries, then write. Last-write-wins per key is safe because a fingerprint is a pure function of the code, so concurrent reads of the same symbol produce the same hash. A lost update can **never** cause a wrong freshness verdict — the staleness check always runs against the real repo — it only costs a redundant re-ground next run.
 
 ## When chronicle was never used (herald-only)
 
@@ -112,3 +113,4 @@ Paste this to the agent that maintains `chronicle` (herald does **not** edit chr
 > 8. Update all assets referencing the old paths (`checker-spec.md`, `verification.md`, `staleness.md`, anything mentioning `.chronicle`/`knowledge-base/.chronicle/`).
 > 9. Bump chronicle's version and document the change + migration in the README.
 > 10. Don't change standalone behavior: no git → no fast-path; nothing present → first run seeds the ledger.
+> 11. **Concurrent-safe writes:** write the ledger atomically (temp + rename) and read-merge-write (union by `path#symbol`); last-write-wins per key is safe because fingerprints are deterministic.

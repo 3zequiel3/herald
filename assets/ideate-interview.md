@@ -38,7 +38,7 @@ Does this extend an existing pattern, or introduce a new one? Reusing an existin
 Will this run once, per-request, per-user, or at high volume? The answer changes the design (sync vs queued, cached vs computed) and surfaces `[risk]`s early. Don't over-engineer — just size it.
 
 ### 6. MVP vs post-MVP boundary
-What is the smallest version that delivers the value, and what is explicitly deferred? A sharp boundary keeps the seed focused so the SDD flow produces a tight first change instead of a sprawling one. Defer aggressively; mark deferred items as `[open-q]` or future scope.
+What is the smallest version that delivers the value, and what is explicitly deferred? A sharp boundary keeps the seed focused so the SDD flow produces a tight first change instead of a sprawling one. Defer aggressively; mark deferred items as `[open-q]` or future scope. Also ask: is this **one** change or **several**? If the idea spans multiple distinct capabilities, that is the signal to decompose into an ordered slicing (see [`consolidation.md`](consolidation.md)), not one blob.
 
 ---
 

@@ -34,6 +34,10 @@ Every `[open-q]` the SDD flow must resolve. These travel into the seed so nothin
 
 ---
 
+> **Large changes → propose a decomposition.** If consolidation reveals the idea touches many modules or several distinct capabilities, do **not** hand off one monster seed. Break it into an **ordered slicing** (slice 1 = MVP → slice 2 → slice 3, in dependency order) — this is the seed's "Suggested first slice" turned into a sequence — and flag it at the gate: *"this is large — I'd split it into N; the first slice is X."* The downstream SDD flow decomposes too (its workload guard / chained PRs), but standalone this is the only safety net, and it keeps the first change tight either way.
+
+---
+
 ## The approval gate (mandatory)
 
 After presenting the proposal, stop and ask the user to decide. Make the fact/proposal split and the freshness flags impossible to miss — that visibility is the whole point of the gate.

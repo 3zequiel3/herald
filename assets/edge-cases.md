@@ -35,6 +35,7 @@ Real ideation sessions are messy. Handle these cases explicitly rather than gues
 | User pushes to skip the approval gate | The gate is mandatory. You can move fast, but the user must see the fact/proposal split before any handoff. |
 | Running headless / no human to approve | Do **not** auto-approve and do **not** hand off. Return `needs-approval` with the proposal + seed for a human to review later. The gate's authority is a human; its absence is not permission. |
 | User asks to "continue yesterday's proposal" | herald persists **no** proposal artifact — it has no memory of past seeds. Ask the user to re-paste the prior seed or point at it; never reconstruct it from memory. |
+| User explicitly asks to save the proposal / seed | herald persists nothing by default, but an explicit write request is the user's call: write the seed (the same text it would hand off) to the path the user picks. That is honoring a request, not herald keeping state — the no-artifact default is intact. |
 
 ---
 

@@ -59,7 +59,7 @@ The seed is plain prose (it becomes a prompt), but it must carry the labeled str
 <every [risk] / [assumption] / [open-q] — these MUST survive into the spec flow>
 
 ## Suggested first slice (MVP)
-<the smallest valuable change, so the SDD flow produces a tight first change>
+<the smallest valuable change; for a large idea, an ordered slicing (slice 1 = MVP → 2 → 3, in dependency order) so the flow produces a tight first change>
 ```
 
 > Why keep the markers in the seed: `sdd-explore` will still do its own exploration, but starting from a seed that already says "this is verified against code" vs "this is an open design question" saves it from re-deriving everything and prevents a spec being built on an unmarked assumption. The seed is a head start, not a replacement for the SDD flow's own rigor.
@@ -69,3 +69,5 @@ The seed is plain prose (it becomes a prompt), but it must carry the labeled str
 ## Standalone behavior
 
 When no orchestrator / SDD flow is present, herald presents the seed inline (`status: inline-only`) and says something like: *"No SDD/opsx flow detected — here's the consolidated seed you can paste into `/sdd-new`, or use as-is. Installing the SDD skills would let me hand this off automatically."* The structure is identical; only the consumer changes.
+
+Add one nudge, because standalone there is no downstream store to keep the record: *"this seed is your only trace of why this was decided — save it somewhere if you want an audit trail."* herald still writes **nothing** by default; persistence is the user's explicit call (see [`edge-cases.md`](edge-cases.md)).
