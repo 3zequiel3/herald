@@ -49,6 +49,10 @@ A fact can be true-but-uncertain. Flags make that visible:
 | `[risk]` | a way the proposal could fail or a cost it carries |
 | `[open-q]` | a question that must be answered before/within the SDD flow |
 
+### Confidence on a proposal (optional)
+
+A `[proposal]` may carry a confidence suffix **only when it drops below high** — `[proposal] (med)` or `[proposal] (low)` — to flag how sure herald is that the suggested approach is the right one. High-confidence proposals carry **no** suffix (the default), so the annotation stays signal, not noise. Factual claims never take a confidence suffix: their freshness flag already encodes their certainty.
+
 ---
 
 ## Examples

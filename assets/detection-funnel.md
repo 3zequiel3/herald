@@ -35,6 +35,19 @@ For each system in scope, detect — without reading code — what factual mater
 | `docs/` with sources, loose `.md`, images, pasted prompts | Additional evidence to cite (`[doc]`, `[img]`). |
 | Code present, no KB, no docs | Grounding must come from a **delegated code read**. |
 
+### Spec-flow footprint (decides the handoff target up front)
+
+Also detect, without reading code, which spec-driven flow can consume the seed — so herald knows its terminal step from the start:
+
+| Signal | Tells you |
+|---|---|
+| `sdd-*` skills / agents installed | **SDD** flow → handoff entry `/sdd-new` |
+| `opsx-*` / `openspec/` present | **opsx** flow → its entry command |
+| An orchestrator that declares it consumes seeds | **generic** flow → it routes the seed itself |
+| None of the above | no flow → `inline-only`, recommend installing one |
+
+> herald is **not** hard-wired to `/sdd-new`. Adapter, priority order, multiple-flow and unrecognized-flow handling: [`orchestrator-integration.md`](orchestrator-integration.md).
+
 ### Stack via manifests (per system)
 
 Same manifest→stack table as chronicle (`package.json` → Node/framework, `go.mod` → Go, `pyproject.toml` → Python, `composer.json` → PHP/Laravel, etc.). Detect by SIGNAL, not by reading source.
@@ -67,6 +80,22 @@ Everything Layer 0 resolved (system count, stack, which sources exist) is **conf
 
 ---
 
+## Complexity router — Express vs Full track
+
+After Layer 0 (and the mode proposal), pick the **track** from footprint signals alone — no extra question:
+
+| Signals | Track |
+|---|---|
+| 1 system + fresh `.ledger/` + a small/named slice, or the user says "quick / rápido / algo chico" | **Express** |
+| Bridge (2+ systems), or large/ambiguous scope, or grounding `stale` / `unverifiable` / no-KB | **Full** |
+
+- **Express = draft-first:** ground the fresh slice, **draft the proposal immediately** (inferred premises marked `[assumption]`), ask only the **blocking** gaps, then go to the gate. See [`ideate-interview.md`](ideate-interview.md) → Draft-first.
+- **Full:** run the complete battery (Ideate, or Ideate + Bridge) before consolidation.
+
+Bridge is **always Full** — integration risk is not something to improvise. The approval gate and the fact/proposal split are mandatory in **both** tracks; Express changes the order and depth of questioning, never the discipline.
+
+---
+
 ## Layer 2 — Deep, bounded reading (delegated)
 
 Reading real source code happens **only when grounding requires it** (a source is `stale`, `unverifiable` and the user wants a check, or absent), and only for the **slice relevant to the proposal**. Never "read everything to understand". Prefer delegation to an existing explorer — full protocol in [`grounding.md`](grounding.md).
@@ -78,7 +107,8 @@ This is what makes proposing against a giant system cost nearly the same as a sm
 ## Funnel summary
 
 ```
-Layer 0 (manifests + structure + system count, free)
+Layer 0 (manifests + structure + system count + spec-flow detection, free)
    → Layer 1 (confirm mode + ask only human gaps: intent, WHY, freshness)
-      → Layer 2 (delegated bounded read ONLY of the slice the proposal touches)
+      → Complexity router (Express draft-first vs Full battery)
+         → Layer 2 (delegated bounded read ONLY of the slice the proposal touches)
 ```

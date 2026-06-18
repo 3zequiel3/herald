@@ -32,7 +32,7 @@ Ideation must not exhaust the session. Every costly operation (reading code, re-
 
 1. **Cheap detection first** — the filesystem footprint (Layer 0) runs before any code is read.
 2. **On-demand, not automatic** — deep reads happen when grounding requires them, scoped to the relevant slice, never "read everything to understand".
-3. **Delegate the heavy read** — when real code must be read, prefer an existing exploration subagent (`sdd-explore` / `opsx-explore`) that returns a compact result; fall back to a bounded read-only sub-agent. The main session does not inflate.
+3. **Delegate the heavy read** — when real code must be read, send it to a read-only exploration subagent (the generic `Explore` agent, or herald's own bounded sub-agent; reuse `sdd-explore` / `opsx-explore` only if it accepts an ad-hoc, change-less scope) that returns a compact result. The main session does not inflate.
 4. **Report coverage** — always state what was grounded, what was skipped, and which sources were unverifiable. Never cut off silently.
 5. **Bounded and verified before handoff** — consolidate, pass the approval gate, then hand off. Stop before degrading.
 
@@ -58,7 +58,7 @@ This is complemented by the **asset loading map** (below): each step reads only 
 
 Before choosing a mode or reading any source code, run the cheap funnel (full protocol in [`assets/detection-funnel.md`](assets/detection-funnel.md)):
 
-1. **Layer 0 — filesystem footprint (≈0 tokens, no source read):** detect system roots (sibling project dirs, manifests), presence of `knowledge-base/` per system, presence of a chronicle freshness ledger, loose docs/images/prompts. **Count the systems in scope.**
+1. **Layer 0 — filesystem footprint (≈0 tokens, no source read):** detect system roots (sibling project dirs, manifests), presence of `knowledge-base/` per system, presence of a chronicle freshness ledger, loose docs/images/prompts, **and which spec-driven flow is installed** (SDD / opsx / generic orchestrator / none — this decides the handoff target up front). **Count the systems in scope.**
 2. **Layer 1 — confirm + ask only the gaps:** show what was detected, propose the mode, and ask only what the filesystem cannot answer (intent, the WHY, and freshness when it cannot be auto-verified).
 3. **Layer 2 — bounded deep read:** only when grounding requires real code, scoped to the relevant slice, preferably delegated.
 
@@ -116,9 +116,10 @@ Mode question battery (consolidate the idea)
                                     stale / unverified / user-trusted sources flagged
        ├─ user requests changes → re-consolidate (loop)
        └─ user approves → continue
-  → Is an SDD/opsx flow + orchestrator available?
-       ├─ YES → build the seed prompt and hand it to the orchestrator to fire /sdd-new
-       └─ NO  → present the consolidated proposal inline + suggest installing SDD
+  → Is a spec-driven flow (SDD / opsx / …) detected?
+       ├─ YES → build the seed; hand off to that flow's entry (orchestrator fires it, or
+       │        standalone: give the user the exact command — herald never auto-spawns it)
+       └─ NO  → present the consolidated proposal inline + suggest installing a spec flow
 ```
 
 **The approval gate is non-negotiable.** herald never hands a seed to the SDD flow without the user seeing and approving the proposal first. The gate is exactly where the factual/speculative split earns its keep: the user sees which claims are cited fact, which are proposal, and which rest on stale/unverified sources — before committing. Consolidation format and gate presentation: [`assets/consolidation.md`](assets/consolidation.md).
@@ -127,9 +128,9 @@ Mode question battery (consolidate the idea)
 
 ## Handoff
 
-herald does **not** spawn SDD subagents directly — that would bypass the orchestrator protocol (per-phase models, skill paths, execution mode, artifact store). On approval it produces a structured **seed prompt** (the consolidated idea, with the factual/speculative split preserved) and returns control to the orchestrator to fire `/sdd-new`. Seed structure and return contract: [`assets/seed-contract.md`](assets/seed-contract.md). Routing, return signal, and the pasteable orchestrator block: [`assets/orchestrator-integration.md`](assets/orchestrator-integration.md).
+herald is **flow-agnostic**: it does not hard-code `/sdd-new`. It hands the seed to whichever spec-driven flow Layer 0 detected (SDD → `/sdd-new`; opsx → opsx's entry; a generic orchestrator → it routes the seed itself; an unrecognized flow → degrade to inline rather than invent a command). herald does **not** spawn a flow's subagents directly — that would bypass the orchestrator protocol (per-phase models, skill paths, execution mode, artifact store). On approval it produces a structured **seed prompt** (the consolidated idea, with the factual/speculative split preserved) and returns control to the consumer to fire the detected flow. Seed structure, `seed_strength`, and return contract: [`assets/seed-contract.md`](assets/seed-contract.md). Flow detection + adapter, routing, and the pasteable orchestrator block: [`assets/orchestrator-integration.md`](assets/orchestrator-integration.md).
 
-**Standalone:** with no SDD/opsx/orchestrator present, herald emits the seed + proposal inline (`status: inline-only`) and recommends installing SDD. The return contract is identical; only the consumer changes.
+**Standalone (no orchestrator):** herald hands the user the **exact entry command of the detected flow** (e.g. `/sdd-new <seed>`) rather than invoking it itself — same protocol, one explicit step. With no flow at all, it emits the seed + proposal inline (`status: inline-only`) and recommends installing one. The return contract is identical; only the consumer changes.
 
 ---
 
@@ -143,36 +144,20 @@ Full contract in [`assets/provenance.md`](assets/provenance.md). In brief:
 
 ---
 
-## Asset loading map (token discipline)
+## Asset loading map (token discipline · also the asset index)
 
-**Do not load all assets at once.** The detection funnel always runs; the rest load only when the active step needs them.
+**Do not load all assets at once.** The detection funnel always runs; every other asset loads only when its row's trigger fires — and the precise trigger is also its implicit "do not load otherwise" (e.g. `bridge-interview.md` is Bridge-only, so Ideate never loads it).
 
-| Step / Mode | Assets to load | Do NOT load |
+| Asset | Load when | Covers |
 |---|---|---|
-| Step 0 (always) | `detection-funnel.md` | everything else |
-| Grounding (any mode) | `grounding.md`, `provenance.md` | interview batteries |
-| Reading / seeding `.ledger/` | `ledger-contract.md` (schema, ownership, seeding, migration) | interview batteries |
-| Mode Ideate | `ideate-interview.md`, `consolidation.md` | bridge-interview |
-| Mode Bridge | `ideate-interview.md` + `bridge-interview.md`, `consolidation.md` | — |
-| Approval gate + handoff | `consolidation.md`, `seed-contract.md` | interview batteries |
-| Handoff to orchestrator | `orchestrator-integration.md`, `seed-contract.md` | interview batteries |
-| Doubts / conflicts | `edge-cases.md` | — |
-| Few-shot | `examples.md` (active mode section only) | other sections |
-
-`provenance.md` loads whenever claims are produced or presented (grounding, consolidation, gate) — it defines the citation contract, mandatory under the master rule.
-
----
-
-## Resources
-
-- **Detection funnel**: [assets/detection-funnel.md](assets/detection-funnel.md) — Layer 0/1/2, system counting, mode proposal.
-- **Grounding**: [assets/grounding.md](assets/grounding.md) — four freshness states, code-as-truth, delegated reading, non-chronicle KBs.
-- **Ledger contract**: [assets/ledger-contract.md](assets/ledger-contract.md) — the shared `.ledger/` kernel: layout, `fingerprints.json` schema, ownership, herald-seeds-it-when-chronicle-absent, migration, and the chronicle handoff brief.
-- **Ideate interview**: [assets/ideate-interview.md](assets/ideate-interview.md) — single-system question battery.
-- **Bridge interview**: [assets/bridge-interview.md](assets/bridge-interview.md) — cross-system integration battery (source of truth, sync, failure, idempotency).
-- **Consolidation**: [assets/consolidation.md](assets/consolidation.md) — proposal structure + approval-gate presentation.
-- **Seed contract**: [assets/seed-contract.md](assets/seed-contract.md) — seed-prompt structure + return contract to the orchestrator.
-- **Orchestrator integration**: [assets/orchestrator-integration.md](assets/orchestrator-integration.md) — routing, return signal, pasteable instruction block.
-- **Provenance**: [assets/provenance.md](assets/provenance.md) — factual vs speculative taxonomy + freshness flags.
-- **Edge cases**: [assets/edge-cases.md](assets/edge-cases.md) — conflicts, missing inputs, final self-check before the gate.
-- **Examples**: [assets/examples.md](assets/examples.md) — one few-shot per mode (Ideate, Bridge). Load only the active mode's section.
+| `detection-funnel.md` | Step 0 — always, first | Layer 0/1/2, system counting, mode + complexity-track router, spec-flow detection |
+| `grounding.md` | grounding, any mode | four freshness states, code-as-truth, delegated reading, recall |
+| `provenance.md` | whenever claims are produced or presented (grounding, consolidation, gate) | factual vs speculative taxonomy, freshness flags, proposal confidence — mandatory under the master rule |
+| `ledger-contract.md` | reading or seeding `.ledger/` | shared kernel: layout, `fingerprints.json` schema, ownership, seeding, migration, chronicle handoff brief |
+| `ideate-interview.md` | Mode Ideate (and inside Bridge) | single-system question battery + draft-first ordering |
+| `bridge-interview.md` | Mode Bridge only | cross-system battery: source of truth, sync, failure, idempotency |
+| `consolidation.md` | consolidation + approval gate | proposal structure, gate presentation, draft-first |
+| `seed-contract.md` | approval gate + handoff | seed structure, return contract, `seed_strength`, flow-agnostic `next_action` |
+| `orchestrator-integration.md` | handoff to a flow / orchestrator | spec-flow detection + adapter, routing, pasteable block |
+| `edge-cases.md` | doubts / conflicts | conflicts, missing inputs, final self-check before the gate |
+| `examples.md` | few-shot (active mode section only) | one worked example per mode (Ideate, Bridge) |

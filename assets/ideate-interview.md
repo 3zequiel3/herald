@@ -6,6 +6,18 @@ The goal of this battery is to fill, with the user, the gaps the code cannot ans
 
 ---
 
+## Draft-first (Express track)
+
+When the complexity router (see [`detection-funnel.md`](detection-funnel.md)) selected the **Express track** — a small change in a single system, grounding already fresh — invert the order. Do **not** run the full battery up front:
+
+1. From the fresh grounding, **draft the proposal immediately**, marking every inferred premise as `[assumption]`.
+2. Ask **only the blocking gaps** — the questions whose answer would change the proposal's shape (usually just #1 problem/WHY and #6 MVP boundary). Skip anything grounding already settled.
+3. Take the draft to the approval gate, where the user corrects the assumptions in one pass.
+
+The gate and the fact/proposal split stay **mandatory** in Express — draft-first changes the *order* and the *depth* of questioning, never the discipline. Anything large, ambiguous, stale, or Bridge runs the full battery below.
+
+---
+
 ## The battery
 
 Ask in roughly this order; adapt to what grounding already revealed.

@@ -17,8 +17,7 @@ herald and `chronicle` share one well-known location per system root: **`.ledger
 The contract herald relies on:
 
 - **Location:** `<system-root>/.ledger/fingerprints.json` — flat, at the root of `.ledger/`. A stable, predictable path; herald never needs to know who wrote it.
-- **Ownership:** the fingerprint map is **written by tooling, never hand-edited by the model** (the same discipline chronicle enforces). herald only ever obtains a fingerprint from the hashing tool — never from memory.
-- **Fingerprint:** the *normalized* hash of a symbol's body (formatting and comments collapsed), identical to chronicle's algorithm — so a reformat is not a change, only real logic is.
+- **Ownership & fingerprint:** the map is **written by tooling, never hand-edited by the model**; herald only ever obtains a fingerprint from the hashing tool, never from memory. The normalized-hash algorithm and the ownership rules live in **one** place — [`ledger-contract.md`](ledger-contract.md) — so they cannot drift between the two skills.
 - **herald's own state:** herald stores its grounding snapshots at `<system-root>/.ledger/herald-grounding.json` (its extracted facts per slice, each pointing at the fingerprint keys it relied on). This is tooling/infra state — gitignored, never a deliverable. It is consistent with the master rule: no proposal is persisted, only the cache that makes re-grounding cheap.
 - **Standalone:** if `.ledger/` is absent, herald may seed it (compute fingerprints for the slice it reads); if writes are not allowed, it degrades to in-session recall only. Cross-system → one `.ledger/` per system root.
 

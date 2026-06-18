@@ -2,6 +2,8 @@
 
 Consolidation is where herald turns the grounded facts and the interview answers into the proposal the user reviews. The approval gate is where the user sees it, split clean between fact and proposal, and decides. Nothing is handed off before the gate passes — this is non-negotiable (it is the difference between herald as a trustworthy consultant and herald as a black box).
 
+> **Express track (draft-first):** when the complexity router chose Express, this proposal is drafted *before* the full interview — inferred premises carried as `[assumption]` — and the user corrects them at the gate. The structure and the mandatory gate are identical; only the order changes.
+
 ---
 
 ## The consolidated proposal structure

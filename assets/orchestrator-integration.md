@@ -21,9 +21,26 @@ Single system → herald runs **Ideate**; two or more → **Bridge**.
 
 ---
 
+## Spec-flow detection & adapter (herald is not hard-wired to SDD)
+
+herald hands off to whichever spec-driven flow Layer 0 detected — it does **not** assume `/sdd-new`. Resolve the target in priority order:
+
+| Detected | Signal | Entry herald names in `next_action` |
+|---|---|---|
+| **SDD** | `sdd-*` skills / agents present | `/sdd-new <seed>` |
+| **opsx / OpenSpec** | `opsx-*` / `openspec/` present | opsx's entry command |
+| **Generic orchestrator** | an orchestrator that declares it consumes seeds | it routes the seed itself |
+| **None** | none of the above | `inline-only` — no command emitted |
+
+- **Multiple flows present** → prefer the one the orchestrator has configured; with no orchestrator, ask the user which.
+- **An unrecognized flow** → herald does **not** invent its command. It degrades to `inline-only` and says so: *"a spec flow seems present but I don't recognize its entry — here's the seed to feed it manually."*
+- herald **never auto-spawns** a flow's subagents (that bypasses model assignment, skill resolution, and the execution-mode/artifact-store questions the orchestrator owns). Standalone, it hands the user the exact command of the detected flow rather than firing it itself.
+
+---
+
 ## The handshake (return contract)
 
-herald runs as a skill in the main loop and emits the structured signal defined in [`seed-contract.md`](seed-contract.md) (`status`, `mode`, `seed`, `grounding_notes`, `next_action`). The orchestrator acts on `status`:
+herald runs as a skill in the main loop and emits the structured signal defined in [`seed-contract.md`](seed-contract.md) (`status`, `mode`, `seed`, `seed_strength`, `grounding_notes`, `next_action`). The orchestrator acts on `status` and fires the **detected** flow's entry (SDD shown below as the common case):
 
 - **`seed-ready`** → fire `/sdd-new` with `seed` as the base prompt, then continue the normal SDD protocol: ask execution mode / artifact store / delivery strategy, resolve per-phase models, inject skill paths, and delegate to `sdd-explore` / `sdd-propose`. herald does **not** pre-empt these questions — that is the orchestrator's job.
 - **`inline-only`** → no SDD flow detected; present herald's proposal and suggest installing the SDD skills.
