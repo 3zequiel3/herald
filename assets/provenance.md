@@ -49,9 +49,7 @@ A fact can be true-but-uncertain. Flags make that visible:
 | `[risk]` | a way the proposal could fail or a cost it carries |
 | `[open-q]` | a question that must be answered before/within the SDD flow |
 
-### Confidence on a proposal (optional)
-
-A `[proposal]` may carry a confidence suffix **only when it drops below high** — `[proposal] (med)` or `[proposal] (low)` — to flag how sure herald is that the suggested approach is the right one. High-confidence proposals carry **no** suffix (the default), so the annotation stays signal, not noise. Factual claims never take a confidence suffix: their freshness flag already encodes their certainty.
+> A proposal's uncertainty is already carried by the markers above: a low-confidence proposal is one surrounded by `[assumption]` / `[risk]` / `[open-q]`, which say *why* it is uncertain — concretely, not as a vibe. Overall seed confidence is `seed_strength` (mechanically derived from the coverage report; see [`seed-contract.md`](seed-contract.md)). There is no separate per-proposal confidence tag.
 
 ---
 

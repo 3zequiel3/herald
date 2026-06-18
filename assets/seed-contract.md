@@ -27,7 +27,7 @@ next_action:     "fire <detected-flow-entry> with <seed>"   (only when seed-read
 
 ## Seed strength
 
-`seed_strength` is **read off the grounding coverage report** ([`grounding.md`](grounding.md) → Coverage report), not judged separately — so it stays mechanical, not a vibe:
+`seed_strength` is **computed at the approval gate** and **read off the grounding coverage report** ([`grounding.md`](grounding.md) → Coverage report), not judged separately — so it stays mechanical, not a vibe. It is shown to the user at the gate (see [`consolidation.md`](consolidation.md)) and then emitted **verbatim** in the return signal, so the user and the downstream consumer see the same value:
 
 - **solid** — every source in the coverage is `fresh` or `re-grounded from code`, no `⚠ unverified` / `⚠ user-trusted`, and ≤1 `[open-q]`.
 - **partial** — any `⚠ unverified` / `⚠ user-trusted` source, OR a few `[open-q]`, OR a slice that was skipped.

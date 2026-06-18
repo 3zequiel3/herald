@@ -45,6 +45,7 @@ Here's the consolidated proposal. Before I hand anything to the SDD flow:
 - ✅ FACTUAL (cited, grounded): … [with any ⚠ flags shown]
 - 💡 PROPOSAL (what I'm suggesting, not yet built): …
 - ⚠ RISKS / ASSUMPTIONS / OPEN QUESTIONS: …
+- 📊 SEED STRENGTH: solid | partial | thin — <why, read from the coverage report>
 
 Do you want to (a) approve and hand off, (b) change something, or (c) stop here?
 ```
@@ -52,5 +53,7 @@ Do you want to (a) approve and hand off, (b) change something, or (c) stop here?
 - **Change requested** → incorporate and re-present (loop). Do not hand off a stale version.
 - **Approved** → proceed to the seed (see [`seed-contract.md`](seed-contract.md)).
 - **Stop** → return `status: aborted`; do nothing downstream.
+
+> **Compute `seed_strength` here** (solid / partial / thin, read from the coverage report — see [`seed-contract.md`](seed-contract.md)) and show it at the gate, so the user approves knowing how solid the foundation is. The same value is then emitted verbatim in the handoff — the user and the downstream flow see the same number.
 
 > If the factual baseline rests heavily on `⚠ unverified` / `⚠ user-trusted` sources, flag it at the gate explicitly: *"note that most of this stands on an unverified KB — want me to spot-check against the code before we commit?"* The user must approve with eyes open.

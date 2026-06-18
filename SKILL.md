@@ -152,7 +152,7 @@ Full contract in [`assets/provenance.md`](assets/provenance.md). In brief:
 |---|---|---|
 | `detection-funnel.md` | Step 0 — always, first | Layer 0/1/2, system counting, mode + complexity-track router, spec-flow detection |
 | `grounding.md` | grounding, any mode | four freshness states, code-as-truth, delegated reading, recall |
-| `provenance.md` | whenever claims are produced or presented (grounding, consolidation, gate) | factual vs speculative taxonomy, freshness flags, proposal confidence — mandatory under the master rule |
+| `provenance.md` | whenever claims are produced or presented (grounding, consolidation, gate) | factual vs speculative taxonomy, freshness flags — mandatory under the master rule |
 | `ledger-contract.md` | reading or seeding `.ledger/` | shared kernel: layout, `fingerprints.json` schema, ownership, seeding, migration, chronicle handoff brief |
 | `ideate-interview.md` | Mode Ideate (and inside Bridge) | single-system question battery + draft-first ordering |
 | `bridge-interview.md` | Mode Bridge only | cross-system battery: source of truth, sync, failure, idempotency |

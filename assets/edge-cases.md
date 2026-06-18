@@ -49,7 +49,7 @@ Run this quick mechanical pass before presenting. If any answer is "no", fix it 
 6. **MVP slice defined** so the seed stays tight?
 7. **Coverage stated** — what was grounded, what was skipped, what's unverifiable?
 8. **No invented system internals** — anything not read is the user's word or an open question.
-9. **`seed_strength` set and consistent with the coverage** — solid/partial/thin matches what was actually grounded (see [`seed-contract.md`](seed-contract.md)).
+9. **`seed_strength` computed at the gate and consistent with the coverage** — solid/partial/thin matches what was actually grounded, and was shown to the user before approval (see [`seed-contract.md`](seed-contract.md)).
 10. **Flow resolved** — the detected spec flow's entry is named in `next_action` (or `inline-only` if none/unrecognized; never invent a command).
 
 Passing this gate is what makes the seed safe to hand downstream. A failure here compounds into a spec built on sand.
