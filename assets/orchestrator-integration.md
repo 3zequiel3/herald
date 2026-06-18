@@ -23,17 +23,7 @@ Single system → herald runs **Ideate**; two or more → **Bridge**.
 
 ## The handshake (return contract)
 
-herald runs as a skill in the main loop and returns the structured signal from [`seed-contract.md`](seed-contract.md):
-
-```
-status: seed-ready | inline-only | aborted
-mode:   ideate | bridge
-seed:   <base prompt for /sdd-new>
-grounding_notes: <freshness caveats>
-next_action: "run /sdd-new with <seed>"
-```
-
-The orchestrator acts on `status`:
+herald runs as a skill in the main loop and emits the structured signal defined in [`seed-contract.md`](seed-contract.md) (`status`, `mode`, `seed`, `grounding_notes`, `next_action`). The orchestrator acts on `status`:
 
 - **`seed-ready`** → fire `/sdd-new` with `seed` as the base prompt, then continue the normal SDD protocol: ask execution mode / artifact store / delivery strategy, resolve per-phase models, inject skill paths, and delegate to `sdd-explore` / `sdd-propose`. herald does **not** pre-empt these questions — that is the orchestrator's job.
 - **`inline-only`** → no SDD flow detected; present herald's proposal and suggest installing the SDD skills.

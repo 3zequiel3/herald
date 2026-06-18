@@ -77,8 +77,8 @@ This is the same fingerprint machinery chronicle uses for staleness — herald j
 
 When grounding falls back to real code (`stale`, `unverifiable`-and-checking, or no KB at all), herald does **not** read code at scale itself. It **delegates** the read, in priority order:
 
-1. **An existing exploration subagent** — `sdd-explore`, `opsx-explore`, or whatever explorer is installed. Reuses ecosystem machinery, runs in its own context, returns a compact result. The main session stays lean.
-2. **Fallback** — herald's own bounded, read-only sub-agent, scoped strictly to the slice the proposal touches.
+1. **A read-only exploration subagent** — the generic `Explore` agent, or herald's own bounded read-only sub-agent, scoped strictly to the slice the proposal touches. It runs in its own context and returns a compact result, so the main session stays lean. This is the default, always-available path.
+2. **Reuse an SDD explorer only when it fits** — if `sdd-explore` / `opsx-explore` is installed AND can take an ad-hoc, change-less scope, prefer it (it reuses ecosystem machinery). Do **not** assume it does: those are SDD *phase* agents with their own lifecycle, so lean on them only when they genuinely accept a one-off read; otherwise stay with option 1.
 
 Why this matters: **double win.** Token economy (isolated context, compact return — the main session does not inflate) and reuse (no reinvented explorer; herald leans on the same tooling the SDD flow already ships). The fallback is what keeps herald standalone when no explorer exists.
 

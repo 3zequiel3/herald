@@ -44,8 +44,20 @@ Cross-system (herald Bridge mode) → one `.ledger/` per system root; herald rea
 }
 ```
 
-- **Fingerprint algorithm:** the normalized hash of a symbol's body (formatting and comments collapsed), so a reformat is **not** a change — only real logic is. This algorithm is the contract; it must stay identical across both skills. (chronicle already defines it in `assets/checker-spec.md §4`; herald reuses it verbatim.)
+- **Fingerprint algorithm:** the normalized hash of a symbol's body (formatting and comments collapsed), so a reformat is **not** a change — only real logic is. This algorithm is the contract; it must stay identical across both skills — defined in the next section so herald is self-sufficient.
 - **`ref`:** the git commit at fingerprint time, used as the baseline for the git fast-path staleness check. `null` when git is unavailable.
+
+## Fingerprint normalization (so herald can seed identically)
+
+herald must produce the same fingerprint chronicle would, or the ledger stops being interoperable. When herald seeds or refreshes an entry, normalize the symbol's body **before** hashing:
+
+1. **Extract by symbol**, not by line range — the function/class/method body the citation points to.
+2. **Strip comments and docstrings** (line and block).
+3. **Collapse whitespace**: every run of spaces, tabs, and newlines becomes a single space; trim the ends.
+4. **Touch nothing else**: identifiers, literals, and operator order are left exactly as-is. So a reformat or a new comment is **not** a change, but any real logic change is.
+5. `fingerprint = sha256(normalized_body)`, computed with the hashing tool (`sha256sum` / `shasum`), **never** from the model's memory. Without a hashing tool, fall back to a normalized structural signature, and say so.
+
+This mirrors chronicle's algorithm (its `checker-spec.md §4`); this section is the copy herald keeps in sync, so it never needs to load a chronicle asset to seed correctly.
 
 ## Ownership & discipline (hard rules)
 

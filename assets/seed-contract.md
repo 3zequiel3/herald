@@ -8,7 +8,7 @@ herald does **not** spawn SDD subagents itself. It returns a structured signal; 
 
 ## The return signal
 
-On gate success herald returns this structure (to the orchestrator, or inline to the user when standalone):
+On gate success herald emits this structure (to the orchestrator, or inline to the user when standalone). It is a structured-output **convention**, not a typed API: herald writes these fields as text and the consumer — an orchestrator agent, or the user — reads them. The discipline is that herald always emits them in a parseable shape.
 
 ```
 status:          seed-ready | inline-only | aborted
